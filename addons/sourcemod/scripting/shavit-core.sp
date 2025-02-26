@@ -383,7 +383,7 @@ public void OnPluginStart()
 
 	//change noclip speed
 	RegConsoleCmd("sm_noclipspeed", Command_NoclipSpeed, "Change client's sv_noclipspeed to specific value");
-	RegConsoleCmd("sm_ns", Command_NoclipSpeed, "Change client's sv_noclipspeed to specific value");	
+	RegConsoleCmd("sm_ns", Command_NoclipSpeed, "Change client's sv_noclipspeed to specific value");
 
 	//repeat command
 	RegConsoleCmd("sm_repeat", Command_ToggleRepeat, "Repeat client's timer to a stage or a bonus.");
@@ -584,7 +584,7 @@ void LoadDHooks()
 		SetFailState("Failed to get ProcessMovement offset");
 	}
 
-	Handle processMovement = DHookCreate(offset, HookType_Raw, ReturnType_Void, ThisPointer_Ignore, DHook_ProcessMovement);
+	Handle processMovement = DHookCreate(offset, HookType_Raw, ReturnType_Void, ThisPointer_Ignore, DHook_ProcessMovementPre);
 	DHookAddParam(processMovement, HookParamType_CBaseEntity);
 	DHookAddParam(processMovement, HookParamType_ObjectPtr);
 	DHookRaw(processMovement, false, IGameMovement);
@@ -756,7 +756,7 @@ public int MenuHandler_Timer(Menu menu, MenuAction action, int param1, int param
 			return 0;
 		}
 
-		Command_Timer(param1, 0);			
+		Command_Timer(param1, 0);
 	}
 	else if (action == MenuAction_End)
 	{
@@ -861,11 +861,11 @@ public void ShowTrackMenu(int client, bool bonus)
 		{
 			break;
 		}
-		
+
 		if (((iTrackMask >> i) & 1) == 1)
 		{
 			GetTrackName(client, i, sTrack, sizeof(sTrack));
-			
+
 			char sInfo[8];
 			IntToString(i, sInfo, 8);
 
@@ -880,7 +880,7 @@ public void ShowTrackMenu(int client, bool bonus)
 		Shavit_RestartTimer(client, iLastTrack, true, false);
 		delete menu;
 		return;
-	}	
+	}
 
 	if(menu.ItemCount == 0)
 	{
@@ -1144,13 +1144,13 @@ public void CallOnRepeatChanged(int client, bool old_value, bool new_value)
 	char sTrack[32];
 	if(gA_Timers[client].iTimerTrack != Track_Main)
 	{
-		GetTrackName(client, gA_Timers[client].iTimerTrack, sTrack, 32);		
+		GetTrackName(client, gA_Timers[client].iTimerTrack, sTrack, 32);
 	}
 	else
 	{
 		if(Shavit_GetStageCount(Track_Main) > 1)
 		{
-			FormatEx(sTrack, 32, "%T %d", "StageText", client, gA_Timers[client].iLastStage);			
+			FormatEx(sTrack, 32, "%T %d", "StageText", client, gA_Timers[client].iLastStage);
 		}
 		else
 		{
@@ -1400,8 +1400,8 @@ public Action Command_NoclipSpeed(int client, int args)
 	sv_noclipspeed.ReplicateToClient(client, sCommand);
 	gF_NoclipSpeed[client] = fNewNoclipSpeed;
 
-	Shavit_PrintToChat(client, "%T", "NoclipSpeedChanged", client, 
-	gS_ChatStrings.sVariable, gS_ChatStrings.sText, 
+	Shavit_PrintToChat(client, "%T", "NoclipSpeedChanged", client,
+	gS_ChatStrings.sVariable, gS_ChatStrings.sText,
 	gS_ChatStrings.sVariable2, fOldNoclipSpeed, gS_ChatStrings.sText,
 	gS_ChatStrings.sVariable2, fNewNoclipSpeed, gS_ChatStrings.sText);
 
@@ -1756,25 +1756,25 @@ void CallOnTrackChanged(int client, int oldtrack, int newtrack)
 			if(newtrack != Track_Main)
 			{
 				GetTrackName(client, newtrack, sTrack, 32);
-				Shavit_PrintToChat(client, "%T", "EnabledTimerRepeat", client, gS_ChatStrings.sVariable, sTrack, gS_ChatStrings.sText);				
+				Shavit_PrintToChat(client, "%T", "EnabledTimerRepeat", client, gS_ChatStrings.sVariable, sTrack, gS_ChatStrings.sText);
 			}
 			else if(Shavit_GetStageCount(newtrack) < 2)
 			{
 				GetTrackName(client, oldtrack, sTrack, 32);
 				ChangeClientRepeat(client, false);
-				Shavit_PrintToChat(client, "%T", "DisableTimerRepeat", client, gS_ChatStrings.sVariable, sTrack, gS_ChatStrings.sText);	
+				Shavit_PrintToChat(client, "%T", "DisableTimerRepeat", client, gS_ChatStrings.sVariable, sTrack, gS_ChatStrings.sText);
 			}
 			else
 			{
 				FormatEx(sTrack, 32, "%T 1", "StageText", client);
-				Shavit_PrintToChat(client, "%T", "EnabledTimerRepeat", client, gS_ChatStrings.sVariable, sTrack, gS_ChatStrings.sText);	
+				Shavit_PrintToChat(client, "%T", "EnabledTimerRepeat", client, gS_ChatStrings.sVariable, sTrack, gS_ChatStrings.sText);
 			}
 		}
 		else if (oldtrack == Track_Main && !DoIHateMain(client))
 		{
 			Shavit_StopChatSound();
 			Shavit_PrintToChat(client, "%T", "TrackChangeFromMain", client, gS_ChatStrings.sVariable, gS_ChatStrings.sText, gS_ChatStrings.sVariable, gS_ChatStrings.sText);
-		}		
+		}
 	}
 }
 
@@ -2198,7 +2198,7 @@ public int Native_StartStageTimer(Handle handler, int numParams)
 				gA_Timers[client].aStageStartInfo.iGoodGains = gA_Timers[client].iGoodGains;
 				gA_Timers[client].aStageStartInfo.iTotalMeasures = gA_Timers[client].iTotalMeasures;
 				gA_Timers[client].aStageStartInfo.iZoneIncrement = 0;
-				gA_Timers[client].aStageStartInfo.fMaxVelocity = curVel;	
+				gA_Timers[client].aStageStartInfo.fMaxVelocity = curVel;
 				gA_Timers[client].aStageStartInfo.fAvgVelocity = curVel;
 			}
 		}
@@ -2395,7 +2395,7 @@ public int Native_FinishMap(Handle handler, int numParams)
 
 	if(gA_Timers[client].iTimerTrack == Track_Main && Shavit_GetStageCount(Track_Main) > 1)
 	{
-		gA_Timers[client].fCPTimes[gA_Timers[client].iLastStage] = gA_Timers[client].fCurrentTime;		
+		gA_Timers[client].fCPTimes[gA_Timers[client].iLastStage] = gA_Timers[client].fCurrentTime;
 	}
 
 	if (gA_Timers[client].fCurrentTime <= 0.11)
@@ -2416,7 +2416,7 @@ public int Native_FinishMap(Handle handler, int numParams)
 	if(result != Plugin_Continue && result != Plugin_Changed)
 	{
 		return 0;
-	} 
+	}
 
 #if DEBUG
 	PrintToServer("0x%X %f -- startoffset=%f endoffset=%f fullticks=%d fracticks=%d", snapshot.fCurrentTime, snapshot.fCurrentTime, snapshot.fZoneOffset[Zone_Start], snapshot.fZoneOffset[Zone_End], snapshot.iFullTicks, snapshot.iFractionalTicks);
@@ -2551,7 +2551,7 @@ public int Native_FinishStage(Handle handler, int numParams)
 		gA_Timers[client].aStageStartInfo.iGoodGains = gA_Timers[client].iGoodGains;
 		gA_Timers[client].aStageStartInfo.iTotalMeasures = gA_Timers[client].iTotalMeasures;
 		gA_Timers[client].aStageStartInfo.iZoneIncrement = 0;
-		gA_Timers[client].aStageStartInfo.fMaxVelocity = fEndVelocity;	
+		gA_Timers[client].aStageStartInfo.fMaxVelocity = fEndVelocity;
 		gA_Timers[client].aStageStartInfo.fAvgVelocity = fEndVelocity;
 		gA_Timers[client].fStageFinishTimes[stage] = end.fCurrentTime;
 	}
@@ -2831,10 +2831,10 @@ public int Native_SetPracticeMode(Handle handler, int numParams)
 	if(alert && practice && !gA_Timers[client].bPracticeMode && (gI_MessageSettings[client] & MSG_PRACALERT) == 0)
 	{
 		Shavit_PrintToChat(client, "%T", "PracticeModeAlert", client, gS_ChatStrings.sWarning, gS_ChatStrings.sText);
-		
+
 		if(!gCV_DisablePracticeModeOnStart.BoolValue)
 		{
-			Shavit_PrintToChat(client, "%T", "PracticeModeTips", client, gS_ChatStrings.sVariable, gS_ChatStrings.sText);			
+			Shavit_PrintToChat(client, "%T", "PracticeModeTips", client, gS_ChatStrings.sVariable, gS_ChatStrings.sText);
 		}
 	}
 
@@ -3100,7 +3100,7 @@ public int Native_StageTimeValid(Handle plugin, int numParams)
 public int Native_SetStageTimeValid(Handle plugin, int numParams)
 {
 	gA_Timers[GetNativeCell(1)].bStageTimeValid = GetNativeCell(2);
-	
+
 	return 1;
 }
 
@@ -3165,7 +3165,7 @@ public void ChangeClientLastStage(int client, int stage)
 	{
 		return;
 	}
-	
+
 	if(gA_Timers[client].iTimerTrack >= Track_Bonus && stage > 1)
 	{
 		gA_Timers[client].iTimerTrack = Track_Main;
@@ -3271,7 +3271,7 @@ void StartTimer(int client, int track)
 	{
 		bNoVerticalSpeed = (Shavit_GetTrackSpeedLimitFlags(track) & ZSLF_NoVerticalSpeed) > 0;
 	}
-	
+
 	if (!bNoVerticalSpeed || (fSpeed[2] == 0.0 && curVel <= fLimit) || ((curVel <= ClientMaxPrestrafe(client) && gA_Timers[client].bOnGround &&
 			  (gI_LastTickcount[client]-gI_FirstTouchedGround[client] > RoundFloat(0.5/GetTickInterval()))))) // beautiful
 	{
@@ -3296,7 +3296,7 @@ void StartTimer(int client, int track)
 			gA_Timers[client].iJumps = 0;
 			gA_Timers[client].iTotalMeasures = 0;
 			gA_Timers[client].iGoodGains = 0;
-			
+
 			if (gA_Timers[client].iTimerTrack != track)
 			{
 				CallOnTrackChanged(client, gA_Timers[client].iTimerTrack, track);
@@ -3310,7 +3310,7 @@ void StartTimer(int client, int track)
 			{
 				if(Shavit_GetStageCount(track) > 1)
 				{
-					if(gA_Timers[client].fCPTimes[1] != -1.0)	
+					if(gA_Timers[client].fCPTimes[1] != -1.0)
 					{
 						gA_Timers[client].fCPTimes = empty_times;//set it -1.0 to make cptime dont need to reset every tick
 						gA_Timers[client].fStageFinishTimes = empty_times;
@@ -3718,12 +3718,12 @@ public void Shavit_OnLeaveZone(int client, int type, int track, int id, int enti
 {
 	if (track != gA_Timers[client].iTimerTrack)
 	{
-		return;		
+		return;
 	}
 
 	if (type != Zone_Airaccelerate && type != Zone_CustomSpeedLimit)
 	{
-		return;		
+		return;
 	}
 
 	UpdateStyleSettings(client);
@@ -3809,7 +3809,7 @@ public void PostThinkPost(int client)
 		{
 			if(gCV_UseOffsets.BoolValue)
 			{
-				CalculateTickIntervalOffset(client, Zone_Start, bMainTimerStageStart);			
+				CalculateTickIntervalOffset(client, Zone_Start, bMainTimerStageStart);
 			}
 
 			CheckClientStartVelocity(client, (gA_Timers[client].bOnlyStageMode && bNormalStart && gA_Timers[client].iTimerTrack == Track_Main) || bMainTimerStageStart);
@@ -3824,13 +3824,13 @@ public void PostThinkPost(int client)
 				Shavit_StopChatSound();
 				Shavit_PrintToChat(client, "%s", sOffsetMessage);
 			}
-		}		
+		}
 	}
 }
 
 public void CheckClientStartVelocity(int client, bool stagestart)
 {
-	int stage = gA_Timers[client].iLastStage; 
+	int stage = gA_Timers[client].iLastStage;
 	int track = gA_Timers[client].iTimerTrack;
 	int style = gA_Timers[client].bsStyle;
 
@@ -3862,7 +3862,7 @@ public void CheckClientStartVelocity(int client, bool stagestart)
 		{
 			bZoneLimited = true;
 		}
-		
+
 		gA_Timers[client].bStageTimeValid = bZoneLimited ? true:curVel < fMaxPrespeed;
 
 		if(curVel > 20)
@@ -3874,8 +3874,8 @@ public void CheckClientStartVelocity(int client, bool stagestart)
 			{
 				float fStartVelDiffWR = speed - fStartVelWR;
 
-				FormatEx(sVelDiff, sizeof(sVelDiff), "(SR: %s%s%.f", 
-					fStartVelDiffWR > 0 ? gS_ChatStrings.sImproving : gS_ChatStrings.sWarning, fStartVelDiffWR > 0 ? "+":"", fStartVelDiffWR);	
+				FormatEx(sVelDiff, sizeof(sVelDiff), "(SR: %s%s%.f",
+					fStartVelDiffWR > 0 ? gS_ChatStrings.sImproving : gS_ChatStrings.sWarning, fStartVelDiffWR > 0 ? "+":"", fStartVelDiffWR);
 
 				float fStartVelPB = Shavit_GetClientStageStartVelocity(client, style, stage);
 
@@ -3884,7 +3884,7 @@ public void CheckClientStartVelocity(int client, bool stagestart)
 					float fStartVelDiffPB = speed - fStartVelPB;
 
 					FormatEx(sVelDiff, sizeof(sVelDiff), "%s%s u/s | PB: %s%s%.f", sVelDiff, gS_ChatStrings.sText,
-						fStartVelDiffPB > 0 ? gS_ChatStrings.sImproving : gS_ChatStrings.sWarning, fStartVelDiffPB > 0 ? "+":"", fStartVelDiffPB);	
+						fStartVelDiffPB > 0 ? gS_ChatStrings.sImproving : gS_ChatStrings.sWarning, fStartVelDiffPB > 0 ? "+":"", fStartVelDiffPB);
 				}
 
 				FormatEx(sVelDiff, sizeof(sVelDiff), "%s%s u/s)", sVelDiff, gS_ChatStrings.sText);
@@ -3892,7 +3892,7 @@ public void CheckClientStartVelocity(int client, bool stagestart)
 
 			if((gI_MessageSettings[client] & MSG_SPEEDTRAP) == 0)
 			{
-				Shavit_StopChatSound();							
+				Shavit_StopChatSound();
 				Shavit_PrintToChat(client, "%T %s", "StageStartZonePrespeed", client,
 					gS_ChatStrings.sVariable2, stage, gS_ChatStrings.sText,
 					gA_Timers[client].bStageTimeValid ? gS_ChatStrings.sVariable : gS_ChatStrings.sWarning, speed, gS_ChatStrings.sText, sVelDiff);
@@ -3930,8 +3930,8 @@ public void CheckClientStartVelocity(int client, bool stagestart)
 			{
 				float fStartVelDiffWR = speed - fStartVelWR;
 
-				FormatEx(sVelDiff, sizeof(sVelDiff), "(SR: %s%s%.f", 
-					fStartVelDiffWR > 0 ? gS_ChatStrings.sImproving : gS_ChatStrings.sWarning, fStartVelDiffWR > 0 ? "+":"", fStartVelDiffWR);	
+				FormatEx(sVelDiff, sizeof(sVelDiff), "(SR: %s%s%.f",
+					fStartVelDiffWR > 0 ? gS_ChatStrings.sImproving : gS_ChatStrings.sWarning, fStartVelDiffWR > 0 ? "+":"", fStartVelDiffWR);
 
 				float fStartVelPB = Shavit_GetClientStartVelocity(client, style, track);
 
@@ -3940,7 +3940,7 @@ public void CheckClientStartVelocity(int client, bool stagestart)
 					float fStartVelDiffPB = speed - fStartVelPB;
 
 					FormatEx(sVelDiff, sizeof(sVelDiff), "%s%s u/s | PB: %s%s%.f", sVelDiff, gS_ChatStrings.sText,
-						fStartVelDiffPB > 0 ? gS_ChatStrings.sImproving : gS_ChatStrings.sWarning, fStartVelDiffPB > 0 ? "+":"", fStartVelDiffPB);	
+						fStartVelDiffPB > 0 ? gS_ChatStrings.sImproving : gS_ChatStrings.sWarning, fStartVelDiffPB > 0 ? "+":"", fStartVelDiffPB);
 				}
 
 				FormatEx(sVelDiff, sizeof(sVelDiff), "%s%s u/s)", sVelDiff, gS_ChatStrings.sText);
@@ -3948,7 +3948,7 @@ public void CheckClientStartVelocity(int client, bool stagestart)
 
 			if((Shavit_GetMessageSetting(client) & MSG_SPEEDTRAP) == 0)
 			{
-				Shavit_StopChatSound();							
+				Shavit_StopChatSound();
 				Shavit_PrintToChat(client, "%T %s", "TrackStartZonePrespeed", client, gS_ChatStrings.sVariable, speed, gS_ChatStrings.sText, sVelDiff);
 			}
 
@@ -3956,10 +3956,10 @@ public void CheckClientStartVelocity(int client, bool stagestart)
 			{
 				if(IsValidClient(i) && GetSpectatorTarget(i) == client && (Shavit_GetMessageSetting(i) & MSG_SPEEDTRAP) == 0)
 				{
-					Shavit_StopChatSound();							
+					Shavit_StopChatSound();
 					Shavit_PrintToChat(i, "%s*%N*%s %T %s", gS_ChatStrings.sImproving, client, gS_ChatStrings.sText, "TrackStartZonePrespeed", i, gS_ChatStrings.sVariable, speed, gS_ChatStrings.sText, sVelDiff);
 				}
-			}	
+			}
 		}
 	}
 }
@@ -4015,7 +4015,7 @@ public MRESReturn DHook_AcceptInput_player_speedmod_Post(int pThis, DHookReturn 
 	return MRES_Ignored;
 }
 
-public MRESReturn DHook_ProcessMovement(Handle hParams)
+public MRESReturn DHook_ProcessMovementPre(Handle hParams)
 {
 	int client = DHookGetParam(hParams, 1);
 
@@ -4123,6 +4123,8 @@ public MRESReturn DHook_ProcessMovementPost(Handle hParams)
 	Call_PushCell(time);
 	Call_Finish();
 
+	MaybeDoPhysicsUntouch(client);
+
 	return MRES_Ignored;
 }
 
@@ -4156,12 +4158,12 @@ void CalculateTickIntervalOffset(int client, int zonetype, bool stage)
 	if(stage)
 	{
 		gA_Timers[client].aStageStartInfo.fZoneOffset[zonetype] = gF_Fraction[client];
-		gA_Timers[client].aStageStartInfo.fDistanceOffset[zonetype] = gF_SmallestDist[client];	
+		gA_Timers[client].aStageStartInfo.fDistanceOffset[zonetype] = gF_SmallestDist[client];
 	}
 	else
 	{
 		gA_Timers[client].fZoneOffset[zonetype] = gF_Fraction[client];
-		gA_Timers[client].fDistanceOffset[zonetype] = gF_SmallestDist[client];		
+		gA_Timers[client].fDistanceOffset[zonetype] = gF_SmallestDist[client];
 	}
 
 	Call_StartForward(gH_Forwards_OnTimeOffsetCalculated);
@@ -4174,7 +4176,7 @@ void CalculateTickIntervalOffset(int client, int zonetype, bool stage)
 	gF_SmallestDist[client] = 0.0;
 }
 
-bool TREnumTrigger(int entity, int client) 
+bool TREnumTrigger(int entity, int client)
 {
 	if (entity <= MaxClients) {
 		return true;
@@ -4256,13 +4258,13 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 	int iZoneStage, iStageZoneSpeedLimitFlags;
 	int iTrackStartLimitFlags = Shavit_GetTrackSpeedLimitFlags(gA_Timers[client].iTimerTrack);
-	
+
 	bool bInsideStageZone = gA_Timers[client].iTimerTrack == Track_Main ? gB_Zones && Shavit_InsideZoneStage(client, iZoneStage, iStageZoneSpeedLimitFlags):false;
 	bool bInsideTrackStartZone = gB_Zones && Shavit_InsideZone(client, Zone_Start, gA_Timers[client].iTimerTrack);
 	bool bInsideStageStartZone = (bInsideStageZone && iZoneStage == gA_Timers[client].iLastStage);
 
 	bool bInStart = bInsideTrackStartZone || bInsideStageStartZone;
-	
+
 	float fSpeed[3];
 	float fCurrentTime;
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", fSpeed);
@@ -4594,10 +4596,10 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 	else if ((buttons & IN_JUMP) > 0 && mtMoveType == MOVETYPE_WALK && !bInWater)
 	{
-		if ((gB_Auto[client] && GetStyleSettingBool(gA_Timers[client].bsStyle, "autobhop")) 
+		if ((gB_Auto[client] && GetStyleSettingBool(gA_Timers[client].bsStyle, "autobhop"))
 		|| (gB_Zones && Shavit_InsideZone(client, Zone_Autobhop, gA_Timers[client].iTimerTrack)))
 		{	// just force autobhop enabled in autobhop zone whatever situation
-			SetEntProp(client, Prop_Data, "m_nOldButtons", (iOldButtons &= ~IN_JUMP));			
+			SetEntProp(client, Prop_Data, "m_nOldButtons", (iOldButtons &= ~IN_JUMP));
 		}
 	}
 
@@ -4763,7 +4765,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		{
 			frameCount = float(gA_Timers[client].aStageStartInfo.iZoneIncrement);
 			maxVel = gA_Timers[client].aStageStartInfo.fMaxVelocity;
-			gA_Timers[client].aStageStartInfo.fMaxVelocity = (curVel > maxVel) ? curVel : maxVel;	
+			gA_Timers[client].aStageStartInfo.fMaxVelocity = (curVel > maxVel) ? curVel : maxVel;
 			gA_Timers[client].aStageStartInfo.fAvgVelocity += (curVel - gA_Timers[client].aStageStartInfo.fAvgVelocity) / frameCount;
 		}
 	}
@@ -4940,7 +4942,7 @@ public int MenuHandler_MessageSetting(Menu menu, MenuAction action, int param1, 
 		char sInfo[16];
 		char sDisplay[64];
 		int style = 0;
-		
+
 		menu.GetItem(param2, sInfo, 16, style, sDisplay, 64);
 		int iSelection = StringToInt(sInfo);
 
